@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import EmojiPicker from "emoji-picker-react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://realtime-chat-app-61zl.onrender.com");
 
 
 const Chat = () => {
@@ -63,15 +63,15 @@ const Chat = () => {
 
     const fetchUsersAndGroups = async () => {
       try {
-        const userRes = await fetch("http://localhost:5000/api/users");
+        const userRes = await fetch("https://realtime-chat-app-61zl.onrender.com/api/users");
         const userData = await userRes.json();
         setUsers(userData.filter(u => u.username !== currentUser));
 
-        const groupRes = await fetch(`http://localhost:5000/api/groups/${currentUser}`);
+        const groupRes = await fetch(`https://realtime-chat-app-61zl.onrender.com/api/groups/${currentUser}`);
         const groupData = await groupRes.json();
         setGroups(groupData);
 
-        const unreadRes = await fetch(`http://localhost:5000/api/unread/${currentUser}`);
+        const unreadRes = await fetch(`https://realtime-chat-app-61zl.onrender.com/api/unread/${currentUser}`);
         const unreadData = await unreadRes.json();
         setUnreadCounts(unreadData);
       } catch (error) {
@@ -167,7 +167,7 @@ const Chat = () => {
       const fetchMessages = async () => {
         try {
           if (selectedUser) {
-            const res = await fetch(`http://localhost:5000/api/messages/${currentUser}/${selectedUser.username}`);
+            const res = await fetch(`https://realtime-chat-app-61zl.onrender.com/api/messages/${currentUser}/${selectedUser.username}`);
             const data = await res.json();
             setMessages(data);
             socket.emit("mark_as_read", { sender: selectedUser.username, receiver: currentUser });
@@ -176,7 +176,7 @@ const Chat = () => {
             socket.emit("join_group", selectedGroup._id);
 
             const res = await fetch(
-              `http://localhost:5000/api/messages/group/${selectedGroup._id}`
+              `https://realtime-chat-app-61zl.onrender.com/api/messages/group/${selectedGroup._id}`
             );
 
             const data = await res.json();
@@ -249,16 +249,16 @@ const Chat = () => {
 
   const addReaction = async (messageId, emoji) => {
     try {
-      await fetch(`http://localhost:5000/api/reactions/${messageId}`, {
+      await fetch(`https://realtime-chat-app-61zl.onrender.com/api/reactions/${messageId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emoji }),
       });
       if (selectedUser) {
-        const res = await fetch(`http://localhost:5000/api/messages/${currentUser}/${selectedUser.username}`);
+        const res = await fetch(`https://realtime-chat-app-61zl.onrender.com/api/messages/${currentUser}/${selectedUser.username}`);
         setMessages(await res.json());
       } else if (selectedGroup) {
-        const res = await fetch(`http://localhost:5000/api/messages/group/${selectedGroup._id}`);
+        const res = await fetch(`https://realtime-chat-app-61zl.onrender.com/api/messages/group/${selectedGroup._id}`);
         setMessages(await res.json());
       }
     } catch (error) {
@@ -269,7 +269,7 @@ const Chat = () => {
   const createGroup = async () => {
     if (!newGroupName.trim()) return;
     try {
-      const res = await fetch("http://localhost:5000/api/groups/create", {
+      const res = await fetch("https://realtime-chat-app-61zl.onrender.com/api/groups/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({name: newGroupName, description: newGroupDescription, admin: currentUser,members: [currentUser, ...selectedMembers]})
@@ -286,7 +286,7 @@ const Chat = () => {
   const addMembers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/groups/${selectedGroup._id}/add-members`,
+        `https://realtime-chat-app-61zl.onrender.com/api/groups/${selectedGroup._id}/add-members`,
         {
           method: "PUT", headers: {"Content-Type": "application/json"},
           body: JSON.stringify({members: membersToAdd, addedBy: currentUser}),
@@ -316,7 +316,7 @@ const Chat = () => {
   const openProfile = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/users/profile/${currentUser}`,
+        `https://realtime-chat-app-61zl.onrender.com/api/users/profile/${currentUser}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -339,7 +339,7 @@ const Chat = () => {
   const saveProfile = async () => {
     try {
       const res = await fetch(
-      `http://localhost:5000/api/users/profile/${currentUser}`,
+      `https://realtime-chat-app-61zl.onrender.com/api/users/profile/${currentUser}`,
         {
           method: "PUT", headers: {"Content-Type": "application/json", Authorization: `Bearer ${token}`},
           body: JSON.stringify({username: currentUser, email: editEmail, bio: editBioText, avatar: selectedAvatar}),
@@ -361,7 +361,7 @@ const Chat = () => {
       console.log("Fetching:", username);
 
       const res = await fetch(
-        `http://localhost:5000/api/users/profile/${username}`
+        `https://realtime-chat-app-61zl.onrender.com/api/users/profile/${username}`
       );
 
       console.log("Status:", res.status);

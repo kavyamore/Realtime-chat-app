@@ -14,7 +14,7 @@ const Auth = ({ onLogin }) => {
     const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
     
     try {
-      const res = await fetch(`http://localhost:5000${endpoint}`, {
+      const res = await fetch(`https://realtime-chat-app-61zl.onrender.com${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
